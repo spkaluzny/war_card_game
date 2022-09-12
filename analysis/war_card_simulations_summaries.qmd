@@ -1,0 +1,95 @@
+---
+title: "War Card Game Simulations"
+author: "Stephen Kaluzny"
+format: html
+---
+
+```{r setup, echo=FALSE}
+suppressPackageStartupMessages(library("dplyr", quiet=TRUE))
+suppressPackageStartupMessages(library("ggplot2", quiet=TRUE))
+```
+## Simulation Code
+
+Python code from:
+
+## Data
+
+```{r read_required}
+d_required <- as.data.frame(
+  data.table::fread(here::here("data", "war_required_shuffle.csv")))
+```
+
+```{r no_war9}
+if(all(d_required[["war9"]] == 0)) {
+  d_required <- d_required |> select(-war9)
+}
+```
+
+```{r}
+names(d_required)
+```
+
+## Rounds
+
+```{r meanvar}
+with(d_required, c(mean=mean(rounds), var=var(rounds)))
+```
+
+```{r summary}
+with(d_required, summary(rounds))
+```
+
+## Wins
+
+```{r}
+table(d_required[["winner"]]) / nrow(d_required)
+```
+
+```{r}
+table(d_required[["type"]]) / nrow(d_required)
+```
+
+## Wars
+
+```{r}
+d_required |> select(rounds:war8) |>
+  summarise_all(mean)
+d_required |> select(rounds:war8) |>
+  summarise_all(median)
+d_required |> select(rounds:war8) |>
+  summarise_all(min)
+d_required |> select(rounds:war8) |>
+  summarise_all(max)
+```
+
+### Shortest Games
+
+```{r indx_min}
+indx_min_required <- which(d_required[["rounds"]] == min(d_required[["rounds"]]))
+```
+
+```{r shortest}
+d_required[indx_min_required, ] |> select(type:war8)
+```
+### Longest Games
+
+```{r indx_max}
+indx_max_required <- which(d_required[["rounds"]] == max(d_required[["rounds"]]))
+```
+
+```{r longest}
+d_required[indx_max_required, ] |> select(type:war8)
+```
+
+### No Wars
+
+```{r}
+indx_no_wars_required <- which(d_required[["war0"]] == d_required[["rounds"]])
+```
+
+There were `r length(indx_no_wars_required)` games with no wars with the
+required shuffle simulation.
+
+```{r}
+length(indx_no_wars_required)
+```
