@@ -29,6 +29,11 @@ if(all(d_required[["war9"]] == 0)) {
 names(d_required)
 ```
 
+```{r totals, echo=FALSE}
+ngames <- nrow(d_required)
+nrounds <- sum(d_required[["rounds"]])
+```
+
 ## Rounds
 
 ```{r meanvar}
@@ -49,6 +54,25 @@ table(d_required[["winner"]]) / nrow(d_required)
 table(d_required[["type"]]) / nrow(d_required)
 ```
 
+## Shortest Games
+
+```{r indx_min}
+indx_min_required <- which(d_required[["rounds"]] == min(d_required[["rounds"]]))
+```
+
+```{r shortest}
+d_required[indx_min_required, ] |> select(type:war8)
+```
+## Longest Games
+
+```{r indx_max}
+indx_max_required <- which(d_required[["rounds"]] == max(d_required[["rounds"]]))
+```
+
+```{r longest}
+d_required[indx_max_required, ] |> select(type:war8)
+```
+
 ## Wars
 
 ```{r}
@@ -62,23 +86,23 @@ d_required |> select(rounds:war8) |>
   summarise_all(max)
 ```
 
-### Shortest Games
+### 8 War
 
-```{r indx_min}
-indx_min_required <- which(d_required[["rounds"]] == min(d_required[["rounds"]]))
+```{r war8}
+d_required |> filter(war8 > 0) |>
+  select(type:war8)
 ```
 
-```{r shortest}
-d_required[indx_min_required, ] |> select(type:war8)
-```
-### Longest Games
-
-```{r indx_max}
-indx_max_required <- which(d_required[["rounds"]] == max(d_required[["rounds"]]))
+### 7 War
+```{r war7}
+d_required |> filter(war7 > 0) |>
+  select(type:war7)
 ```
 
-```{r longest}
-d_required[indx_max_required, ] |> select(type:war8)
+### 6 War
+```{r war6}
+d_required |> filter(war6 > 0) |>
+  select(type:war6)
 ```
 
 ### No Wars
@@ -90,6 +114,8 @@ indx_no_wars_required <- which(d_required[["war0"]] == d_required[["rounds"]])
 There were `r length(indx_no_wars_required)` games with no wars with the
 required shuffle simulation.
 
+Summary of `rounds` in the no war games:
+
 ```{r}
-length(indx_no_wars_required)
+summary(d_required[indx_no_wars_required, "rounds"])
 ```
